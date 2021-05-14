@@ -14,6 +14,7 @@ Uses hardikvasa's google image download, https://github.com/hardikvasa/google-im
 
 Instead: patched version here, use these commands in your site-packages folder in python folders
 (navigate here using %appdata% and going to local for windows)
+
 git clone https://github.com/Joeclinton1/google-images-download.git
 
 cd google-images-download && python setup.py install
