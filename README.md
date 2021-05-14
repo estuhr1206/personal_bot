@@ -1,6 +1,8 @@
 # personal_bot
 A bot to figure out the basics of discord bots and the api.
 
+Has quite a few random commands, including a timer, a google image search, and just saying bob.
+
 # Libraries/Modules
 
 discord.py 
