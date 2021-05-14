@@ -8,6 +8,11 @@ discord.py
 Excellent guide on starting to make a discord bot:
 https://realpython.com/how-to-make-a-discord-bot-python/#what-is-discord
 
+Uses hardikvasa's google image download, https://github.com/hardikvasa/google-images-download
+
+install this using pip install google_images_download
+
+
 # Using this bot
 
 This bot has a bunch of random features that I'm trying my hand at implementing, such as a timer, simple text file reading and outputting, etc.
