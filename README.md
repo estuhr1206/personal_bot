@@ -10,7 +10,12 @@ https://realpython.com/how-to-make-a-discord-bot-python/#what-is-discord
 
 Uses hardikvasa's google image download, https://github.com/hardikvasa/google-images-download
 
-install this using pip install google_images_download
+//install this using pip install google_images_download ----do not use unless it has been updated recently, date of this note: 5/13/21
+
+Instead: patched version here, use these commands in your site-packages folder in python folders
+(navigate here using %appdata% and going to local for windows)
+git clone https://github.com/Joeclinton1/google-images-download.git
+cd google-images-download && python setup.py install
 
 
 # Using this bot
