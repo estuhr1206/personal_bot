@@ -3,6 +3,8 @@ import asyncio
 import os
 import random
 import time
+import discord
+import imageSearchHelper
 
 from dotenv import load_dotenv
 
@@ -28,7 +30,8 @@ async def testResponse(ctx):
     await ctx.send(response)
 #add functionality, add songs, remove songs, can try to make it approximate the search?
 #maybe play from a range, i.e. song number 1-10.
-
+#note, this doesn't actually work, since I forgot that bots ignore other bots
+#still useful example of pulling from files and formatting the text inside of them
 @bot.command(name='load', help='load a playlist to then use, name must be exact, text file: bob.txt, command, !load bob')
 async def loadplaylist(ctx, name):
     playlistName = "bot/" + name + ".txt"
@@ -66,8 +69,36 @@ async def coinflip(ctx):
     if rand < .5:
         await ctx.send('heads!')
     elif (rand > .99):
-        await ctx.send('howd you break a coin stupid')
+        await ctx.send('wow you\'re lucky, want a cookie or something, also tails btw')
     else:
         await ctx.send('tails')
+
+@bot.command(name='imagesearch', help='Finds first image from google based on input keyword(s)')
+async def imageSearch(ctx, *, searchTerm):
+    await ctx.send('Pulling image from Google')
+    #pulling image using the google-image-search repo
+    #listKeywords = " ".join(searchTerm)
+    #random * as param seems to be discords way of handling multiple words
+    imageSearchHelper.findImage(searchTerm, num=1)
+    fileList = os.listdir('downloads')
+    #checking if list is empty or not
+    
+    count = 1
+    while not fileList and count < 10:
+        count += 1
+        imageSearchHelper.findImage(searchTerm, num=count)
+        fileList = os.listdir('downloads')
+    print(fileList[0])
+    fileName = 'downloads/' + fileList[0]
+    #sending and removing image
+    await ctx.send(file=discord.File(fileName))
+    os.remove(fileName)
+
+@bot.command(name='hello', help='introduction of bob the bot')
+async def introduction(ctx):
+    await ctx.send(file=discord.File('bot/saitama.jpg'))
+    await ctx.send('Hi! My name is bob, and I can do a bunch of random things!')
+    await ctx.send('Try out !help to get a list of my commands, and have fun!')
+
 
 bot.run(TOKEN)
