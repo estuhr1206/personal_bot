@@ -58,10 +58,11 @@ async def playSongs(ctx, numSongs: int):
 
 @bot.command(name='timer', help='creates a timer, put in time as a parameter')
 async def makeTimer(ctx, seconds: int):
+    await ctx.send('set timer for ' + str(seconds) + ' seconds')
     for i in range(seconds):
         await asyncio.sleep(1)
 
-    await ctx.send('time is up!')
+    await ctx.send('timer for ' + str(seconds) + ' seconds is up!')
 
 @bot.command(name='coinflip', help='heads or tails? spits one out randomly')
 async def coinflip(ctx):
@@ -73,7 +74,7 @@ async def coinflip(ctx):
     else:
         await ctx.send('tails')
 
-@bot.command(name='imagesearch', help='Finds first image from google based on input keyword(s)')
+@bot.command(name='image', help='Finds first image from google based on input keyword(s)')
 async def imageSearch(ctx, *, searchTerm):
     await ctx.send('Pulling image from Google')
     #pulling image using the google-image-search repo
@@ -82,14 +83,86 @@ async def imageSearch(ctx, *, searchTerm):
     imageSearchHelper.findImage(searchTerm, num=1)
     fileList = os.listdir('downloads')
     #checking if list is empty or not
+
     
     count = 1
+    #pile-driving over common errors
     while not fileList and count < 10:
         count += 1
         imageSearchHelper.findImage(searchTerm, num=count)
         fileList = os.listdir('downloads')
+    totalCount = count + 10
+    #checking file size, limit of 8 MB for discord
+    fileName = 'downloads/' + fileList[0]
+    fileSize = os.stat(fileName).st_size
+    while fileSize >= 8*1024*1024 and count < totalCount:
+        count += 1
+        #take out old image
+        os.remove(fileName)
+        imageSearchHelper.findCountedImage(searchTerm, num=count, randNum=count - 1)
+        fileList = os.listdir('downloads')
+        if fileList:
+            fileName = 'downloads/' + fileList[0]
+        else:
+            count += 1
+
+    # if (fileSize >= 8*1024*1024):
+    #     count += 1
+    #     start = count
+    #     os.remove(fileName)
+    #     #fileList = []
+
+    #     #assume file name is the same from initial call, shouldn't change in a few seconds
+    #     imageSearchHelper.findImage(searchTerm, num=count)
+    #     os.remove(fileName)
+    #     fileList = os.listdir('downloads')
+    #     #resetting file Name stuff
+    #     fileName = 'downloads/' + fileList[0]
+    
+    print(fileName)
+ 
+
+    #sending and removing image
+    await ctx.send(file=discord.File(fileName))
+    os.remove(fileName)
+
+@bot.command(name='randimage', help='Finds random image from google based on input keyword(s)')
+async def randImageSearch(ctx, *, searchTerm):
+    await ctx.send('Pulling image from Google')
+    randomNum = random.randint(2, 26)
+    #pulling image using the google-image-search repo
+    #listKeywords = " ".join(searchTerm)
+    #random * as param seems to be discords way of handling multiple words
+    imageSearchHelper.findCountedImage(searchTerm, num=randomNum, randNum=randomNum - 1)
+    fileList = os.listdir('downloads')
+    #checking if list is empty or not
+    
+    count = 1
+    while not fileList and count < 10:
+        count += 1
+        imageSearchHelper.findCountedImage(searchTerm, num=randomNum + count, randNum=randomNum + count - 1)
+        fileList = os.listdir('downloads')
     print(fileList[0])
     fileName = 'downloads/' + fileList[0]
+
+
+    totalCount = count + 10
+    #checking file size, limit of 8 MB for discord
+    fileName = 'downloads/' + fileList[0]
+    fileSize = os.stat(fileName).st_size
+    #looping through again
+    while fileSize >= 8*1024*1024 and count < totalCount:
+        count += 1
+        #take out old image
+        os.remove(fileName)
+        imageSearchHelper.findCountedImage(searchTerm, num=randomNum + count, randNum=randomNum + count - 1)
+        fileList = os.listdir('downloads')
+        #similar check to first while loop, sometimes images just don't come through
+        if fileList:
+            fileName = 'downloads/' + fileList[0]
+        else:
+            count += 1
+
     #sending and removing image
     await ctx.send(file=discord.File(fileName))
     os.remove(fileName)
