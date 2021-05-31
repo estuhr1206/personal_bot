@@ -17,7 +17,7 @@ Instead: patched version here, use these commands in your site-packages folder i
 
 git clone https://github.com/Joeclinton1/google-images-download.git
 
-cd google-images-download && python setup.py install
+cd google-images-download THEN do python setup.py install
 
 
 # Using this bot
